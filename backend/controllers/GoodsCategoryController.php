@@ -38,7 +38,7 @@ class GoodsCategoryController extends \yii\web\Controller
         return $this->render('add',['model'=>$model,'nodes'=>json_encode($nodes)]);//将数值转换成json数据存储格式
     }
 
-    //商品分类添加
+    //商品分类修改
     public function actionEdit($id){
         $model = GoodsCategory::findOne(['id'=>$id]);
         $request = \Yii::$app->request;
@@ -51,7 +51,12 @@ class GoodsCategoryController extends \yii\web\Controller
                     $model->prependTo($countries);
                 }else{
                     //根节点
-                    $model->makeRoot();
+                    //解决修改根节点报错的  ==0可以写可以不写，这里parent_id=0
+                    if($model->getOldAttribute('parent_id') == 0){
+                        //旧的parent_id改为新的parent_id会报错
+                    }else{
+                        $model->makeRoot();
+                    }
                 }
 
 //                $model->save();
@@ -67,7 +72,12 @@ class GoodsCategoryController extends \yii\web\Controller
     //删除
     public function actionDel($id){
         $model = GoodsCategory::findOne(['id'=>$id]);
-        $model->delete();
+        //删除不了顶级分类，调试
+        if($model->parent_id==0){
+            $model->deleteWithChildren();
+        }else{
+            $model->delete();
+        }
         //设置提示信息
         \Yii::$app->session->setFlash('success','删除成功');
         //跳转到首页
