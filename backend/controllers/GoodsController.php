@@ -22,24 +22,29 @@ class GoodsController extends \yii\web\Controller
     //商品列表
     public function actionIndex()
     {
-        $model = new Goods();
-        $query = Goods::find();
+//        $model = new Goods();
+        $query = Goods::find()->where(['status'=>'1']);
+        $request = \Yii::$app->request;
+        $name = $request->get('name');
+        if($name){
+//        var_dump($name);exit();
+            $query->andWhere(['like','name',$name]);
+        }
         $page = new Pagination();
-        $page->totalCount = $query->where(['status'=>'1'])->count();//总条数
+        $page->totalCount = $query->count();//总条数
         $page->defaultPageSize = 3;//每页显示多少条
         //limit 0,3  --> offset:0  limit:3
         $models = $query->offset($page->offset)->where(['status'=>'1'])->limit($page->limit)->all();
-        //加载视图  render('视图的名称',视图传递参数[])
 
-        return $this->render('index',['models'=>$models,'model'=>$model,'page'=>$page]);
+        //加载视图  render('视图的名称',视图传递参数[])
+        return $this->render('index',['models'=>$models,'page'=>$page]);
     }
 
     //搜索
     public function actionSou(){
-//        $model = new Goods();
-//        $query = Goods::find()->where(['like','name','']);
+        $query = Goods::find();
         //搜索包含有鸡的所有商品
-         $query = Goods::find()->where(['like','name','手机']);
+//         $query = Goods::find()->where(['like','name','手机']);
         //总条数
         $total = $query->count();
         //每页字数
@@ -99,6 +104,7 @@ class GoodsController extends \yii\web\Controller
             if($model->validate()){
                 if($intro->validate()){
                     if($goodsDay->validate()){
+                        //从左边补0
                             $model->sn = date('Ymd',time()).str_pad($goodsCount->count,5,'0',STR_PAD_LEFT);
                             $model->save();
                             $intro->goods_id = $model->id;

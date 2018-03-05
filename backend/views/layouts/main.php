@@ -58,18 +58,36 @@ AppAsset::register($this);
                 ['label' => '添加文章', 'url' => ['article/add']],
             ],
         ],
+        ['label' => '管理员',
+            'items' => [
+              ['label'=> '管理员列表', 'url' => ['admin/index']],
+              ['label'=> '添加管理员', 'url' => ['admin/add']],
+            ],
+         ],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => '登录', 'url' => ['/site/login']];
+        $menuItems[] = [
+             'label' => '未登录',
+            'items' => [
+                ['label'=> '登录','url' => ['admin/login']]
+            ],
+        ];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
+        $menuItems[] = [
+            'label' => '当前用户 (' . Yii::$app->user->identity->username . ')',
+            'items' => [
+                ['label'=> '退出登录','url' => ['admin/logout']],
+                ['label'=> '修改密码','url' => ['admin/pass?id='.Yii::$app->user->id]]
+            ],
+        ];
+//        $menuItems[] = '<li>'
+//            . Html::beginForm(['/admin/logout'], 'post')
+//            . Html::submitButton(
+//                '退出登录 (' . Yii::$app->user->identity->username . ')',
+//                ['class' => 'btn btn-link logout']
+//            )
+//            . Html::endForm()
+//            . '</li>';
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

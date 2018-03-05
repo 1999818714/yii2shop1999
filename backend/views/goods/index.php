@@ -3,20 +3,27 @@
 <?=\yii\bootstrap\Html::a('回收站',['goods/recycler'],['class'=>'btn btn-danger'])?>
 <?php
 //echo '<pre>';
-$form = \yii\bootstrap\ActiveForm::begin([
-    'method'=>'get',
-    'action'=>\yii\helpers\Url::to(['goods/index']),
-    'options'=>[
-        'class'=>'form-inline']
-]);
-echo $form->field($model,'name');
-echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-success','goods/sou']);
-\yii\bootstrap\ActiveForm::end();
-//?>
-<!--<form action="index.php">-->
-<!--    <input type="text" value="" id="name">-->
-<!--    <input type="submit" value="搜索">-->
-<!--</form>-->
+//$form = \yii\bootstrap\ActiveForm::begin([
+//    'method'=>'get',
+//    'action'=>\yii\helpers\Url::to(['goods/index']),
+//    'options'=>[
+//        'class'=>'form-inline']
+//]);
+//echo $form->field($model,'name');
+//echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-success','goods/sou']);
+//\yii\bootstrap\ActiveForm::end();
+
+//echo \yii\bootstrap\Html::beginForm(\yii\helpers\Url::to(['goods/index']),'get');
+//echo \yii\bootstrap\Html::textInput('name',null,['placeholder'=>'商品名称']);
+//echo \yii\bootstrap\Html::textInput('sn');
+//echo '<button type="submit" class="btn btn-primary">搜索</button>';
+//echo \yii\bootstrap\Html::endForm();
+?>
+<form action="/goods/index" method="get">
+    <input type="text" name="name" placeholder="商品名称" id="name">
+<!--    <input type="text" name="sn" placeholder="货号" id="sn">-->
+    <input type="submit" value="搜索">
+</form>
     <table class="table table-bordered table-hover">
     <tr>
         <th>ID</th>
