@@ -9,11 +9,19 @@
 namespace backend\models;
 
 
+use yii\bootstrap\ActiveForm;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
+use yii\web\Response;
 
 class Admin extends ActiveRecord implements IdentityInterface
 {
+
+    public $role;
+    //定义场景
+//    const SCENARIO_ADD = 'add';
+//    const SCENARIO_EDIT = 'edit';
     /**
      * @inheritdoc
      */
@@ -32,8 +40,21 @@ class Admin extends ActiveRecord implements IdentityInterface
             [['username', 'password', 'email'], 'required'],
             [['username'], 'string', 'max' => 50],
             [['password', 'auth_key', 'email', 'last_login_ip'], 'string', 'max' => 255],
-//            ['roles','safe']
+//            ['username', 'unique', 'targetClass' => '\backend\models\admin', 'message' => '用户名已存在.'],
+            ['role','safe']
+            //添加时 必须填密码
+            //修改时 可以不填
+            //场景(添加,修改)
+//            ['password','required','on'=>[self::SCENARIO_ADD]],//配置场景,只在添加场景生效//safe意思在添加时不做验证
+//            ['password','safe','on'=>[self::SCENARIO_EDIT]],//配置场景,只在修改场景生效//safe意思在修改时不做验证
         ];
+    }
+
+    public function validateUsername(){
+                if (\Yii::$app->request->isAjax) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($this);
+                } //ajax提交过来的会直接进行验证
     }
 
     /**
@@ -55,6 +76,42 @@ class Admin extends ActiveRecord implements IdentityInterface
             'last_login_ip' => '最后登录IP',
         ];
     }
+
+    public static function getRoles(){
+        $authManager = \Yii::$app->authManager->getRoles();
+        return ArrayHelper::map($authManager,'name','name');
+    }
+    //获取角色
+//    public static function getRoles()
+//    {
+//        $authManager = \Yii::$app->authManager;
+//        $roles = $authManager->getRoles();
+//        $tmp = [];
+//        foreach ($roles as $role) {
+//            $tmp[$role->name] = $role->name;
+//        }
+//        return $tmp;
+//    }
+
+    //添加角色
+//    public static function addRole(){
+//        $authManager = \Yii::$app->authManager;
+//        if(is_array($this->role)){
+//            foreach ($this->role as $role){
+//                $authManager->assign($authManager->getRole($role),$this->id);
+//            }
+//        }
+//    }
+//修改角色
+//    public static function editRole(){
+//        $authManager = \Yii::$app->authManager;
+//        $authManager->revokeAll($this->id);
+//        if(is_array($this->role)){
+//            foreach ($this->role as $role){
+//                $authManager->assign($authManager->getRole($role),$this->id);
+//            }
+//        }
+//    }
 
     /**
      * Finds an identity by the given ID.
@@ -105,7 +162,7 @@ class Admin extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        // TODO: Implement getAuthKey() method.
+        return $this->auth_key;
     }
 
     /**
@@ -118,6 +175,8 @@ class Admin extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        // TODO: Implement validateAuthKey() method.
+        return $this->auth_key == $authKey;
     }
+
+
 }

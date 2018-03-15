@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilters;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
@@ -22,7 +23,6 @@ class GoodsController extends \yii\web\Controller
     //商品列表
     public function actionIndex()
     {
-//        $model = new Goods();
         $query = Goods::find()->where(['status'=>'1']);
         $request = \Yii::$app->request;
         $name = $request->get('name');
@@ -64,16 +64,15 @@ class GoodsController extends \yii\web\Controller
     //商品回收站列表
     public function actionRecycler()
     {
-        $model = new Goods();
-        $query = Goods::find();
+        $query = Goods::find()->where(['status'=>'0']);
         $page = new Pagination();
-        $page->totalCount = $query->where(['status'=>'0'])->count();//总条数
+        $page->totalCount = $query->count();//总条数
         $page->defaultPageSize = 3;//每页显示多少条
         //limit 0,3  --> offset:0  limit:3
-        $models = $query->offset($page->offset)->where(['status'=>'0'])->limit($page->limit)->all();
+        $models = $query->offset($page->offset)->limit($page->limit)->all();
         //加载视图  render('视图的名称',视图传递参数[])
 
-        return $this->render('index',['models'=>$models,'model'=>$model,'page'=>$page]);
+        return $this->render('index',['models'=>$models,'page'=>$page]);
     }
 
     //商品添加
@@ -86,6 +85,7 @@ class GoodsController extends \yii\web\Controller
         $day = date('Y-m-d');
         $goodsDay = new GoodsDayCount();
         $goodsCount = GoodsDayCount::findOne(['day'=>$day]);
+        //var_dump($goodsCount);die;
         if($goodsCount == null){
             $goodsDay->day = date('Ymd',time());
             $goodsDay->count = 1;
@@ -104,16 +104,18 @@ class GoodsController extends \yii\web\Controller
             if($model->validate()){
                 if($intro->validate()){
                     if($goodsDay->validate()){
+                        if ($goodsCount == null){
+                            $goodsDay->save();
+                        }else{
+                            $goodsCount->save();
+                        }
                         //从左边补0
+//                        var_dump(STR_PAD_LEFT);die;
                             $model->sn = date('Ymd',time()).str_pad($goodsCount->count,5,'0',STR_PAD_LEFT);
                             $model->save();
                             $intro->goods_id = $model->id;
                             $intro->save();
-                            if ($goodsCount == null){
-                                $goodsDay->save();
-                            }else{
-                                $goodsCount->save();
-                            }
+
 
                         //=====七牛云=======
                             $accessKey = '2_w4wwZWCT1LcPebdZ_6uxiUcdCwOfVnMrlbyLvD';
@@ -277,5 +279,19 @@ class GoodsController extends \yii\web\Controller
             ]
         ];
     }
+
+    //过滤器
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilters::class,
+                //默认情况对所有操作生效
+                //排除不需要授权的操作
+                'except'=>['logo-upload']
+            ]
+        ];
+    }
+
+
 
 }

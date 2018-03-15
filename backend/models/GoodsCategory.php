@@ -81,4 +81,21 @@ class GoodsCategory extends \yii\db\ActiveRecord
         return new GoodsCategoryQuery(get_called_class());
     }
 
+
+    /**
+     * hasOne参数 1. 关联对象的类名
+     * 参数2 [key=>value] key 表示关联对象的主键  value 表示关联对象在当前对象的字段
+
+     * hasMany参数 参数1 关联对象的类名
+     * 参数2 ['key'=>'value'] key  关联对象的主键  value 关联对象在中间表的关联字段
+     * viaTable 指定中间表 参数1 中间表名
+     * 参数2 ['key'=>'value'] key 当前对象在中间表的关联字段  value 当前对象的主键
+     */
+
+    public function getCates(){
+        return $this->hasMany(self::class,['parent_id'=>'id']);
+    }
+
+
+
 }

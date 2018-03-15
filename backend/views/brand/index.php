@@ -22,3 +22,11 @@
         </tr>
     <?php endforeach; ?>
 </table>
+<?php
+//分页工具条
+echo \yii\widgets\LinkPager::widget([
+    'pagination'=>$page,
+    'nextPageLabel'=>'下一页',
+    'hideOnSinglePage'=>0
+]);
+?>

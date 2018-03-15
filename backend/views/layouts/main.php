@@ -29,55 +29,62 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '商城后台管理',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => '主页', 'url' => ['/site/index']],
-        ['label' => '品牌',
-            'items' => [
-                ['label' => '品牌列表', 'url' => ['brand/index']],
-                ['label' => '添加品牌', 'url' => ['brand/add']],
-            ],
-        ],
-        [ 'label' => '商品管理',
-            'items' => [
-                ['label' => '商品分类', 'url' => ['goods-category/index']],
-                ['label' => '商品列表', 'url' => ['goods/index']],
-                ['label' => '添加商品', 'url' => ['goods/add']],
-            ],
-        ],
-        [ 'label' => '文章管理',
-            'items' => [
-                ['label' => '文章分类', 'url' => ['article-category/index']],
-                ['label' => '添加文章分类', 'url' => ['article-category/add']],
-                ['label' => '文章列表', 'url' => ['article/index']],
-                ['label' => '添加文章', 'url' => ['article/add']],
-            ],
-        ],
-        ['label' => '管理员',
-            'items' => [
-              ['label'=> '管理员列表', 'url' => ['admin/index']],
-              ['label'=> '添加管理员', 'url' => ['admin/add']],
-            ],
-         ],
+//        ['label' => '主页', 'url' => ['/admin/index']],
+//        ['label' => '品牌',
+//            'items' => [
+//                ['label' => '品牌列表', 'url' => ['brand/index']],
+//                ['label' => '添加品牌', 'url' => ['brand/add']],
+//            ],
+//        ],
+//        [ 'label' => '商品管理',
+//            'items' => [
+//                ['label' => '商品分类', 'url' => ['goods-category/index']],
+//                ['label' => '商品列表', 'url' => ['goods/index']],
+//                ['label' => '添加商品', 'url' => ['goods/add']],
+//            ],
+//        ],
+//        [ 'label' => '文章管理',
+//            'items' => [
+//                ['label' => '文章分类', 'url' => ['article-category/index']],
+//                ['label' => '添加文章分类', 'url' => ['article-category/add']],
+//                ['label' => '文章列表', 'url' => ['article/index']],
+//                ['label' => '添加文章', 'url' => ['article/add']],
+//            ],
+//        ],
+//        ['label' => '管理员',
+//            'items' => [
+//              ['label'=> '管理员列表', 'url' => ['admin/index']],
+//              ['label'=> '添加管理员', 'url' => ['admin/add']],
+//            ],
+//         ],
+//        ['label' => 'Rbac管理',
+//            'items' => [
+//                ['label' => '权限管理列表', 'url' => ['rbac/permission-index']],
+//                ['label' => '添加权限', 'url' => ['rbac/add-permission']],
+//                ['label' => '角色管理列表', 'url' => ['rbac/role-index']],
+//                ['label' => '添加角色', 'url' => ['rbac/add-role']],
+//            ],
+//        ],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = [
-             'label' => '未登录',
-            'items' => [
-                ['label'=> '登录','url' => ['admin/login']]
-            ],
+             'label' => '登录','url' => ['admin/login'],
         ];
     } else {
+        $menuItems = \backend\models\Menu::getMenus($menuItems);
+
         $menuItems[] = [
             'label' => '当前用户 (' . Yii::$app->user->identity->username . ')',
             'items' => [
                 ['label'=> '退出登录','url' => ['admin/logout']],
-                ['label'=> '修改密码','url' => ['admin/pass?id='.Yii::$app->user->id]]
+                ['label'=> '修改密码','url' => ['admin/pass']]
             ],
         ];
 //        $menuItems[] = '<li>'

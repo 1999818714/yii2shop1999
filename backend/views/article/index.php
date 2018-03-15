@@ -15,7 +15,7 @@
             <td><?=$model->id?></td>
             <td><?=$model->name?></td>
             <td><?=$model->intro?></td>
-            <td><?=$model->article_category_id?></td>
+            <td><?=\backend\models\Article::getNameById($model->article_category_id)?></td>
             <td><?=$model->sort?></td>
             <td><?=$model->is_deleted==0? '正常' : '删除'?></td>
             <td><?=$model->create_time?></td>

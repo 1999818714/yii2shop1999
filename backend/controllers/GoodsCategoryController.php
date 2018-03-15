@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilters;
 use backend\models\GoodsCategory;
 
 class GoodsCategoryController extends \yii\web\Controller
@@ -9,7 +10,7 @@ class GoodsCategoryController extends \yii\web\Controller
     //商品分类列表
     public function actionIndex()
     {
-        $models = GoodsCategory::find()->all();
+        $models = GoodsCategory::find()->orderBy(['tree'=>SORT_ASC,'lft'=>SORT_ASC,'id'=>SORT_ASC])->all();
         return $this->render('index',['models'=>$models]);
     }
     //商品分类添加
@@ -109,6 +110,13 @@ class GoodsCategoryController extends \yii\web\Controller
         $nodes = GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
 //        var_dump($nodes);exit;
         return $this->renderPartial('ztree',['nodes'=>$nodes]);
+    }
+
+    //过滤器
+    public function behaviors(){
+        return [
+            'class' => RbacFilters::class
+        ];
     }
 
 

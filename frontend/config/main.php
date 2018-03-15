@@ -12,12 +12,15 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    //默认路由
+
+    'layout'=>false,
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\Member',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -37,14 +40,22 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+        //静态化
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'suffix' => '.html',
             'rules' => [
             ],
         ],
-        */
+        'sms' => [
+            'class'=>\frontend\aliyun\SmsHandler::class,
+            'ak'=>'LTAIL5wjp1WnjiUc',
+            'sk'=>'BnM8dA7p6YeBL5TnsOzPdmctM307CQ',
+            'sign'=>'刘鹏666',
+            'template'=>'SMS_61465004'
+        ]
+
     ],
     'params' => $params,
 ];

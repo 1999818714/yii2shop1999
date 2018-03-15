@@ -16,8 +16,6 @@ use Yii;
  */
 class Brand extends \yii\db\ActiveRecord
 {
-    //处理图片
-//    public $imgFile;
 
     /**
      * @inheritdoc

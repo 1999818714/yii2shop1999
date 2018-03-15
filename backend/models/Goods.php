@@ -99,8 +99,23 @@ class Goods extends \yii\db\ActiveRecord
 //        ];
 //    }
 
+//    public static function find()
+//    {
+//        return new GoodsCategoryQuery(get_called_class());
+//    }
 
 
+    public function getCates(){
+        return $this->hasMany(self::class,['goods_category_id'=>'id']);
+    }
 
+    //这个在前台订单页面有用
+    public function logo(){
+        if(strpos($this->logo,'http://www.yii2shop.com') === false){//没找到
+//            return   Yii::$app->params['backend_logo'].$this->logo;
+            return   "http://www.yii2shop.com".$this->logo;
+        }
+        return $this->logo;
+    }
 
 }

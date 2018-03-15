@@ -1,8 +1,16 @@
 <?php
 $form = \yii\bootstrap\ActiveForm::begin();//表单开始<form>
 echo $form->field($model,'username')->textInput();//通过模型生成输入框
-echo $form->field($model,'password')->passwordInput();
+if($model->getIsNewRecord()){//自动判断添加和修改//添加
+    echo $form->field($model,'password')->passwordInput();
+}else{//修改
+    echo '';
+}
 echo $form->field($model,'email')->textInput();//通过模型生成输入框
+
+echo $form->field($model,'role')->checkboxList(\backend\models\Admin::getRoles());
+
+
 //echo $form->field($model,'password_reset_token')->textInput();//令牌重置密码
 //echo $form->field($model,'created_at')->textInput();//注册时间
 //echo $form->field($model,'updated_at')->textInput();//修改时间

@@ -53,4 +53,22 @@ class Article extends \yii\db\ActiveRecord
             'create_time' => '添加时间',
         ];
     }
+
+    //获取文章分类
+    public static function getArticlenameName(){
+        $articles = ArticleCategory::find()->all();
+        $art_name = [];
+        foreach ($articles as $article){
+            $art_name[$article->id]=$article->name;
+        }
+        return $art_name;
+    }
+
+    //根据文章分类id获取文章分类
+    public static function getNameById($id){
+        $article = ArticleCategory::findOne(['id'=>$id]);
+
+        return $article->name;
+    }
+
 }

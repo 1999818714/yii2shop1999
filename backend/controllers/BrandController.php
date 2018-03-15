@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilters;
 use backend\models\Brand;
 use Qiniu\Storage\UploadManager;
+use yii\data\Pagination;
 use yii\web\UploadedFile;
 
 use Qiniu\Auth;
@@ -16,8 +18,15 @@ class BrandController extends \yii\web\Controller
     //品牌列表
     public function actionIndex()
     {
-        $models = Brand::find()->all();
-        return $this->render('index',['models'=>$models]);
+        $query = Brand::find();
+        $page = new Pagination();
+        $page->totalCount = $query->count();//总条数
+        $page->defaultPageSize = 3;//每页显示多少条
+        //limit 0,3  --> offset:0  limit:3
+        $models = $query->offset($page->offset)->limit($page->limit)->all();
+
+        //加载视图  render('视图的名称',视图传递参数[])
+        return $this->render('index',['models'=>$models,'page'=>$page]);
     }
 
     //添加品牌（图片上传使用WebUploader插件（AJAX上传）,上传成功后回显图片）
@@ -135,5 +144,18 @@ class BrandController extends \yii\web\Controller
             var_dump($ret);
         }
     }
+
+    //过滤器
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilters::class,
+                //默认情况对所有操作生效
+                //排除不需要授权的操作
+                'except'=>['logo-upload']
+            ]
+        ];
+    }
+
 
 }
